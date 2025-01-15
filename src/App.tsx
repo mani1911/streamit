@@ -12,7 +12,8 @@ function App() {
   const peer = new Peer();
   var context;
   var buf;
-  const byteArray = []
+  var source;
+  // const byteArray = []
 
   function init() {
     // if (!window.AudioContext) {
@@ -24,15 +25,17 @@ function App() {
     // }
 
     context = new AudioContext();
-}
+  }
 
 
 
   peer.on("connection", (conn) => {
 
     conn.on("data", (data) => {
-      byteArray.push(data)
-      if(!isPlaying) playByteArray()
+      console.log("Data : ", data)
+      // byteArray.push(data)
+      // console.log(typeof(data))
+      if(!isPlaying) playByteArray(data)
     });
 
     // if(byteArray.length > 500) {
@@ -40,7 +43,7 @@ function App() {
     // }
   })
 
-  function playByteArray() {
+  function playByteArray(byteArray) {
     // console.log("Coming here : ", buf)
     try {
       var arrayBuffer = new ArrayBuffer(byteArray.length);
@@ -52,6 +55,8 @@ function App() {
       context.decodeAudioData(arrayBuffer, function(buffer) {
           buf = buffer;
           play();
+      }, function(error) {
+        console.log("Error Occured decoding Audio : ", error)
       });
     }
     catch(e) {
@@ -62,12 +67,12 @@ function App() {
 
   function play() {
     try {
-      var source = context.createBufferSource();
+      source = context.createBufferSource();
       source.buffer = buf;
       // Connect to the final output node (the speakers
       source.connect(context.destination);
       // Play immediately
-      source.start(0);
+      // source.start(0);
     }
     catch(e){
       // error handling
@@ -81,7 +86,7 @@ function App() {
     const response = await fetch(audioFilePath, {'mode': 'cors'}); // Fetch the audio file
     const buffer = await response.arrayBuffer(); // Convert to ArrayBuffer
 
-    console.log(buffer)
+    // console.log(buffer)
     const view = new Uint8Array(buffer);
 
     return view;
@@ -90,15 +95,17 @@ function App() {
 
   function sendStream(audioFilePath) { 
     getAudioStream(audioFilePath).then((buf) => {
-
-      console.log("coming here")
       var conn = peer.connect(peerid);
-      for (let i = 0; i < buf.length; i++) {
+      // for (let i = 0; i < buf.length; i++) {
+      //   conn.on('open', () => {
+
+      //     conn.send(buf[i]);
+      //   })
+      // }
         conn.on('open', () => {
 
-          conn.send(buf[i]);
+          conn.send(buf);
         })
-      }
     })
     .catch(e => {
       console.log("Error Occured : ", e)
@@ -119,6 +126,7 @@ function App() {
     <>
       <input value = {peerid} onChange={e => setPeerid(e.target.value)}></input>
       <button onClick = {() => sendStream("audio.mp3")}>Connect</button>
+      <button onClick={() => {source.start(0)}}>Play</button>
     </>
   )
 }
