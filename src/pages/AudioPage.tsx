@@ -1,22 +1,25 @@
-// //  @ts-nocheck
+// @ts-nocheck
 
 import { FC, useEffect, useState } from 'react';
-import {useSelector} from "react-redux";
 import Button from '@mui/material/Button';
-import { RootState } from '../context/store';
+import Peer from 'peerjs';
+import { updatePeer } from '../context/actions/peerActions';
+import { useDispatch } from 'react-redux';
 
-const AudioPage:FC = () => {
+interface IPageProps {
+  peer : Peer
+}
+
+var context : AudioContext;
+var buf;
+var source : AudioBufferSourceNode;
+
+const AudioPage:FC<IPageProps> = ({peer}) => {
     const [peerid, setPeerid] = useState("");
-    // const peer = new Peer(useSelector(state => state.peer.peerID));
-    // console.log(useSelector(state => state.peer.peerID))
-
-    const peer = useSelector((state:RootState) => state.peer.peer)
-    var context;
-    var buf;
-    var source;
-
+    const dispatch = useDispatch();
+    dispatch(updatePeer({peerID : peer.id}))
     // const test = useSelector(state => suseSelectortate.peer.peerID)
-  
+
     peer.on("connection", (conn) => {
   
       conn.on("data", (data) => {
@@ -30,8 +33,8 @@ const AudioPage:FC = () => {
   
     function playByteArray(byteArray) {
       try {
-        var arrayBuffer = new ArrayBuffer(byteArray.length);
-        var bufferView = new Uint8Array(arrayBuffer);
+        let arrayBuffer = new ArrayBuffer(byteArray.length);
+        let bufferView = new Uint8Array(arrayBuffer);
         for (var i = 0; i < byteArray.length; i++) {
           bufferView[i] = byteArray[i];
         }
@@ -51,12 +54,16 @@ const AudioPage:FC = () => {
   
     function play() {
       try {
+        console.log("here")
         source = context.createBufferSource();
         source.buffer = buf;
         source.connect(context.destination);
+
+        // source.start(0)
       }
       catch(e){
         // error handling
+        console.log("Error getting audio : ", e)
       }
   
     }
@@ -74,7 +81,6 @@ const AudioPage:FC = () => {
       getAudioStream(audioFilePath).then((buf) => {
         var conn = peer.connect(peerid);
           conn.on('open', () => {
-  
             conn.send(buf);
           })
       })
@@ -89,18 +95,16 @@ const AudioPage:FC = () => {
       const aud = new Audio("audio.mp3");
       conn.on('open', () => {
         conn.send("play");
-        aud.play()
+        // aud.play()
       })
     }
   
-  
     useEffect(() => {
       context = new AudioContext();
-      // console.log('My Peer ID is : ', peer.id)
       peer.on('open', (id) => {
         console.log('My peer ID is: ' + id);
       });
-    }, [])
+    }, [peer]);
   
     
     return (

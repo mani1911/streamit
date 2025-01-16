@@ -2,7 +2,6 @@ import {IPeer, UPDATE_PEER} from "../types";
 
 const initialState : IPeer = {
     peerID : null,
-    peer: null
 };
 
 const peerReducer = (state = initialState, action: { type: string; payload: IPeer; }) => {

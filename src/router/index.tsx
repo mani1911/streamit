@@ -9,12 +9,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import routes from "./routes.tsx";
 
 const Router = () => {
-	// const dispatch = useAppDispatch();
-	// useEffect(() => {
-	// 	(async () => {
-	// 		await dispatch(getUser());
-	// 	})();
-	// }, []);
 	return (
 		<>
 			<BrowserRouter>
