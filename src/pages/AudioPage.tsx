@@ -18,7 +18,6 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
     const [peerid, setPeerid] = useState("");
     const dispatch = useDispatch();
     dispatch(updatePeer({peerID : peer.id}))
-    // const test = useSelector(state => suseSelectortate.peer.peerID)
 
     peer.on("connection", (conn) => {
   
@@ -95,7 +94,7 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
       const aud = new Audio("audio.mp3");
       conn.on('open', () => {
         conn.send("play");
-        // aud.play()
+        aud.play()
       })
     }
   
