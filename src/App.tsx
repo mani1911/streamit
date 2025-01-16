@@ -1,114 +1,23 @@
-import { useEffect, useState, useRef } from 'react';
+import Router from "./router";
 import './App.css'
+import { v4 as uuidv4 } from 'uuid';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updatePeer } from "./context/actions/peerActions";
+import { RootState } from "./context/store";
 import { Peer } from "peerjs";
 
-
-
-
 function App() {
-  const [peerid, setPeerid] = useState("");
-  const peer = new Peer();
-  var context;
-  var buf;
-  var source;
-
-  function init() {
-    context = new AudioContext();
-  }
-
-
-  peer.on("connection", (conn) => {
-
-    conn.on("data", (data) => {
-      console.log("Data : ", data)
-      if(data === "play") {
-        source.start(0)
-      }
-      else if(data instanceof Uint8Array) playByteArray(data)
-    });
-  })
-
-  function playByteArray(byteArray) {
-    try {
-      var arrayBuffer = new ArrayBuffer(byteArray.length);
-      var bufferView = new Uint8Array(arrayBuffer);
-      for (var i = 0; i < byteArray.length; i++) {
-        bufferView[i] = byteArray[i];
-      }
-  
-      context.decodeAudioData(arrayBuffer, function(buffer) {
-          buf = buffer;
-          play();
-      }, function(error) {
-        console.log("Error Occured decoding Audio : ", error)
-      });
-    }
-    catch(e) {
-      // console.log(e)
-    }
-
-  }
-
-  function play() {
-    try {
-      source = context.createBufferSource();
-      source.buffer = buf;
-      source.connect(context.destination);
-    }
-    catch(e){
-      // error handling
-    }
-
-  }
-
-  async function getAudioStream(audioFilePath) {
-    const response = await fetch(audioFilePath, {'mode': 'cors'}); // Fetch the audio file
-    const buffer = await response.arrayBuffer(); // Convert to ArrayBuffer
-    const view = new Uint8Array(buffer);
-
-    return view;
-  }
-
-
-  function sendStream(audioFilePath) { 
-    getAudioStream(audioFilePath).then((buf) => {
-      var conn = peer.connect(peerid);
-        conn.on('open', () => {
-
-          conn.send(buf);
-        })
-    })
-    .catch(e => {
-      console.log("Error Occured : ", e)
-      return
-    })
-  }
-
-  function peersPlay() {
-    var conn = peer.connect(peerid);
-    const aud = new Audio('audio.mp3')
-    conn.on('open', () => {
-      conn.send("play");
-      aud.play()
-    })
-  }
-
+  const dispatch = useDispatch();  
+  const peer = new Peer(useSelector((state:RootState) => state.peer.peerID));
 
   useEffect(() => {
-    init();
-    peer.on('open', (id) => {
-      console.log('My peer ID is: ' + id);
-    });
+    dispatch(updatePeer({peerID : uuidv4(), peer: peer}))
   }, [])
 
-  
-  return (
-    <>
-      <input value = {peerid} onChange={e => setPeerid(e.target.value)}></input>
-      <button onClick = {() => sendStream("audio.mp3")}>Connect</button>
-      <button onClick={() => peersPlay()}>Play</button>
-    </>
-  )
+  return <>
+      <Router/>
+  </>
 }
 
 export default App
