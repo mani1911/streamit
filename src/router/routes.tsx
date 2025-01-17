@@ -1,5 +1,5 @@
 import Peer from "peerjs";
-import { ScanPage, AudioPage } from "../pages";
+import { ScanPage, AudioPage, ConnectedPage } from "../pages";
 import { v4 as uuidv4 } from 'uuid';
 
 interface Routes {
@@ -27,6 +27,12 @@ const routes: Routes[] = [
 		path: "/connect",
 		description: "Scan Page",
 		element: <ScanPage />,
+	},
+	{
+		title: "Connceted Page",
+		path: "/connected",
+		description: "Connected Page",
+		element: <ConnectedPage />,
 	},
 ];
 

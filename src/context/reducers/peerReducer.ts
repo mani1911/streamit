@@ -1,22 +1,26 @@
-import {ADD_PEER, IPeer, UPDATE_PEER} from "../types";
+import {PeerAction, IPeer, UPDATE_PEER, ADD_PEER} from "../types";
 
 const initialState : IPeer = {
     peerID : null,
-    // peersConnected : []
+    peersConnected : []
 };
 
-const peerReducer = (state = initialState, action: { type: string; payload: IPeer; }) => {
+const peerReducer = (state = initialState, action: PeerAction): IPeer => {
     switch (action.type) {
         case UPDATE_PEER:
             return {
                 ...state,
-                ...action.payload
+                peerID : action.payload
             };
+        
+        case ADD_PEER:
 
-        // case ADD_PEER:
-        //     const currentPeersConnected = state.peersConnected;
-        //     curre
-        //     return {...state, }
+            const newPeersConnected = new Array(...state.peersConnected);
+            if(action.payload !== null && !newPeersConnected.includes(action.payload)) newPeersConnected.push(action.payload);
+            return {
+                ...state,
+                peersConnected : newPeersConnected
+            }        
         default:
             return state;
     }

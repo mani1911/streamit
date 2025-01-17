@@ -2,6 +2,7 @@ import { useState, FC } from "react";
 import { Paper, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import ArchiveIcon from '@mui/icons-material/Archive';
+import StreamIcon from '@mui/icons-material/Stream';
 import { QrCode } from "@mui/icons-material";
 
 import { updateApp } from "../context/actions/appActions";
@@ -25,13 +26,13 @@ const Navbar:FC = () => {
         showLabels
         value={value}
         onChange={(event, newValue) => {
-            console.log(newValue)
+            // console.log(newValue)
             setValue(newValue);
         }}
         >
         <BottomNavigationAction onClick={() => changePage('')} defaultChecked label="Home" icon={<HomeIcon />} />
         <BottomNavigationAction onClick={() => changePage('connect')} label="Connect" icon={<QrCode />} />
-        <BottomNavigationAction label="Archive" icon={<ArchiveIcon />} />
+        <BottomNavigationAction onClick={() => changePage('connected')} label="Peer List" icon={<StreamIcon />} />
         </BottomNavigation>
   </Paper>
 }

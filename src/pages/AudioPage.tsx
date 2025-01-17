@@ -3,7 +3,7 @@
 import { FC, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Peer from 'peerjs';
-import { updatePeer } from '../context/actions/peerActions';
+import { addPeersConnection, updatePeer } from '../context/actions/peerActions';
 import { useDispatch } from 'react-redux';
 
 interface IPageProps {
@@ -17,7 +17,7 @@ var source : AudioBufferSourceNode;
 const AudioPage:FC<IPageProps> = ({peer}) => {
     const [peerid, setPeerid] = useState("");
     const dispatch = useDispatch();
-    dispatch(updatePeer({peerID : peer.id}))
+    dispatch(updatePeer(peer.id))
 
     peer.on("connection", (conn) => {
   
@@ -77,6 +77,7 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
   
   
     function sendStream(audioFilePath) { 
+      dispatch(addPeersConnection(peerid));
       getAudioStream(audioFilePath).then((buf) => {
         var conn = peer.connect(peerid);
           conn.on('open', () => {
