@@ -1,13 +1,24 @@
-// @ts-nocheck
+// // @ts-nocheck
 
 import { FC, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Peer from 'peerjs';
 import { addPeersConnection, updatePeer } from '../context/actions/peerActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../context/store';
+
+enum peerActionType {
+  PLAY = "play",
+  CONNECT = "connect",
+}
 
 interface IPageProps {
   peer : Peer
+}
+
+interface IPeerMessage {
+  type : peerActionType,
+  data : any
 }
 
 var context : AudioContext;
@@ -16,17 +27,18 @@ var source : AudioBufferSourceNode;
 
 const AudioPage:FC<IPageProps> = ({peer}) => {
     const [peerid, setPeerid] = useState("");
+    const connectedPeers = useSelector((state:RootState) => state.peer.peersConnected);
     const dispatch = useDispatch();
     dispatch(updatePeer(peer.id))
 
     peer.on("connection", (conn) => {
   
-      conn.on("data", (data) => {
+      conn.on("data", (data : IPeerMessage) => {
         console.log("Data : ", data)
-        if(data === "play") {
-          source.start(0)
+        if(data.type === peerActionType.PLAY) {
+          source.start(data.data)
         }
-        else if(data instanceof Uint8Array) playByteArray(data)
+        else if(data.type === peerActionType.CONNECT) playByteArray(data.data)
       });
     })
   
@@ -45,7 +57,7 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
           console.log("Error Occured decoding Audio : ", error)
         });
       }
-      catch(e) {
+      catch(e) {play
         // console.log(e)
       }
   
@@ -77,26 +89,40 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
   
   
     function sendStream(audioFilePath) { 
-      dispatch(addPeersConnection(peerid));
-      getAudioStream(audioFilePath).then((buf) => {
-        var conn = peer.connect(peerid);
-          conn.on('open', () => {
-            conn.send(buf);
+      try {
+        connectedPeers.forEach(pid => {
+          getAudioStream(audioFilePath).then((buf) => {
+            var conn = peer.connect(pid);
+              conn.on('open', () => {
+                conn.send({type: peerActionType.CONNECT, data: buf});
+              })
           })
-      })
-      .catch(e => {
-        console.log("Error Occured : ", e)
-        return
-      })
+          .catch(e => {
+            console.log("Error Occured sending stream : ", e)
+            return
+          })
+        })
+      }
+      catch(e) {
+        console.log("Error Occured sending stream : ", e)
+      }
+
     }
   
     function peersPlay() {
-      var conn = peer.connect(peerid);
-      const aud = new Audio("audio.mp3");
-      conn.on('open', () => {
-        conn.send("play");
-        aud.play()
+      connectedPeers.forEach(pid => {
+        var conn = peer.connect(pid);
+        const aud = new Audio("audio.mp3");
+        conn.on('open', () => {
+          conn.send({type : peerActionType.PLAY, data : 0});
+          // aud.play()
+        })
       })
+
+    }
+
+    function addPeer() {
+      dispatch(addPeersConnection(peerid));
     }
   
     useEffect(() => {
@@ -110,6 +136,7 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
     return (
       <>
         <input value = {peerid} onChange={e => setPeerid(e.target.value)}></input>
+        <Button onClick = {() => addPeer()}>Add Peer</Button>
         <Button onClick = {() => sendStream("audio.mp3")}>Connect</Button>
         <Button onClick={() => peersPlay()} variant="contained">Play</Button>
       </>
