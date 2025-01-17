@@ -16,7 +16,7 @@ const QRCode: React.FC<{ text: string }> = ({ text }) => {
         }
     }, [text]);
 
-    return <div ref={qrRef}></div>;
+    return <div style = {{'width' : '100%', 'height' : '100%'}} ref={qrRef}></div>;
 };
 
 export default QRCode;
