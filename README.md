@@ -22,13 +22,13 @@ Stream music across multiple devices creating your own speaker setup.
 ## Usage
 - Get QR Code of the peer to connect with
 
-![alt text](image.png)
+![alt text](public/readme/image.png)
 
 - Scan the QR code using the scanner to connect with peer
 
-![alt text](image-1.png)
+![alt text](public/readme/image-1.png)
 
 - Click on connect to connect and stream music with the peers connected and press play to start listening to music  
 
-![alt text](image-2.png)
+![alt text](public/readme/image-2.png)
 
