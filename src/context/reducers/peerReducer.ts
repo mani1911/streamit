@@ -1,4 +1,4 @@
-import {PeerAction, IPeer, UPDATE_PEER, ADD_PEER} from "../types";
+import {PeerAction, IPeer, UPDATE_PEER, ADD_PEER, REMOVE_PEER} from "../types";
 
 const initialState : IPeer = {
     peerID : null,
@@ -20,7 +20,21 @@ const peerReducer = (state = initialState, action: PeerAction): IPeer => {
             return {
                 ...state,
                 peersConnected : newPeersConnected
-            }        
+            }   
+        
+        case REMOVE_PEER:
+            var ind = -1;
+            const peersConnected = new Array(...state.peersConnected);
+
+            ind = peersConnected.indexOf(action.payload);
+            if (ind > -1) { 
+                peersConnected.splice(ind, 1); 
+            }
+            return {
+                ...state,
+                peersConnected : peersConnected
+            }  
+            // if(peersConnected.includes(action.payload)) peersConnected.
         default:
             return state;
     }

@@ -1,11 +1,13 @@
 import { RootState } from "../context/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { styled } from '@mui/material/styles';
 import { IconButton, List, ListItem, ListItemText } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { removePeersConnection } from "../context/actions/peerActions";
 
 const ConnectedPage = () => {
 
+  const dispatch = useDispatch();
   const connected = useSelector((state: RootState) => state.peer.peersConnected);
   return (
     <>
@@ -28,7 +30,7 @@ const ConnectedPage = () => {
                           <ListItem
                             secondaryAction={
                               <IconButton edge="end" aria-label="delete">
-                                <DeleteIcon sx = {{fill : 'white'}}/>
+                                <DeleteIcon onClick = {() => dispatch(removePeersConnection(id))} sx = {{fill : 'white'}}/>
                               </IconButton>
                             }
                           >

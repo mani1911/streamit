@@ -1,17 +1,19 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { QRCode } from "../components";
-import { Modal, Box, Typography } from "@mui/material";
+import { Modal, Box, Typography, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { RootState } from "../context/store";
+import { Scanner } from '@yudiel/react-qr-scanner';
+import { addPeersConnection } from "../context/actions/peerActions";
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '50vw',
-    // bgcolor: 'background.paper',
+    bgcolor: 'background.paper',
     border: '2px solid #000',
     textAlign : 'center',
     boxShadow: 24,
@@ -24,14 +26,29 @@ function ScanPage() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const peerID = useSelector((state:RootState) => state.peer.peerID);
+    const dispatch = useDispatch();
+
+    const [pid, setPid] = useState("");
+
+    function addPeer() {
+        if(pid !== "") dispatch(addPeersConnection(pid));
+    }
+
+
     // console.log("Peer ID : ", peerID)
 
 
     useEffect(() => {
         if(peerID === null) navigate('/');
     }, [peerID]);
-    return <>
+    return <div style = {{maxHeight : "90vh"}}>
         <QrCodeScannerIcon sx = {{'position' : 'fixed', 'top' : '5%', 'right' : '5%'}} onClick={handleOpen}></QrCodeScannerIcon>
+        <Scanner styles={{container : {height : '250px'}}} onScan={(result) => setPid(result[0].rawValue)} />
+        <div style={{marginTop : '30px'}}>
+            <input value = {pid} onChange = {(e) => setPid(e.target.value)}></input>
+            <Button onClick = {() => addPeer()}>Add Peer</Button>
+        </div>
+
         <Modal
             open={open}
             onClose={handleClose}
@@ -43,14 +60,14 @@ function ScanPage() {
                         <QRCode text = {peerID}/>
                         <Typography 
                             variant="caption"
-                            style={{ display: "inline", whiteSpace: "normal", wordBreak: "break-word"  }}>
+                            style={{ display: "inline", whiteSpace: "normal", wordBreak: "break-word", color : "black" }}>
                             {peerID}
                         </Typography>
                     </div>
                 </Box>
 
-</Modal>
-    </>
+        </Modal>
+    </div>
 }
 
 export default ScanPage;
