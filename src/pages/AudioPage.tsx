@@ -72,10 +72,6 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
         source = context.createBufferSource();
         source.buffer = buf;
         source.connect(context.destination);
-        
-        
-        // console.log(source);
-        // source.start(0)
       }
       catch(e){
         // error handling

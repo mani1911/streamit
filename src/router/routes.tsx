@@ -1,6 +1,7 @@
 import Peer from "peerjs";
 import { ScanPage, AudioPage, ConnectedPage } from "../pages";
 import { v4 as uuidv4 } from 'uuid';
+import { config } from "../config/config";
 
 interface Routes {
 	title: string;
@@ -13,8 +14,8 @@ interface Routes {
 const pid = uuidv4().replace(/-/g, "");
 const peer = new Peer(pid,
 	{
-	host: "localhost",
-	port: 9000,
+	host: config.signalling_server_host,
+	port: config.signalling_server_port,
 	path: "/",
 });
 
