@@ -11,7 +11,12 @@ interface Routes {
 
 
 const pid = uuidv4().replace(/-/g, "");
-const peer = new Peer(pid);
+const peer = new Peer(pid,
+	{
+	host: "localhost",
+	port: 9000,
+	path: "/",
+});
 
 
 const routes: Routes[] = [

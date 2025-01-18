@@ -1,6 +1,6 @@
 // // @ts-nocheck
 
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Peer from 'peerjs';
 import { updatePeer } from '../context/actions/peerActions';
@@ -35,7 +35,7 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
       conn.on("data", (data : IPeerMessage) => {
         console.log("Data : ", data)
         if(data.type === peerActionType.PLAY) {
-          source.start(0)
+          source.start(0);
         }
         else if(data.type === peerActionType.CONNECT) playByteArray(data.data)
       });
@@ -43,7 +43,6 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
   
     function playByteArray(byteArray) {
       try {
-        console.log("Coing here")
         let arrayBuffer = new ArrayBuffer(byteArray.length);
         let bufferView = new Uint8Array(arrayBuffer);
         for (var i = 0; i < byteArray.length; i++) {
@@ -65,13 +64,17 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
   
     function play() {
       try {
-
+        
+        // if(source) {
+          
+        //   source.stop(0); source = null;
+        // }
         source = context.createBufferSource();
         source.buffer = buf;
         source.connect(context.destination);
         
         
-        console.log(source);
+        // console.log(source);
         // source.start(0)
       }
       catch(e){
