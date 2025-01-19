@@ -1,6 +1,6 @@
 // // @ts-nocheck
 
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Peer from 'peerjs';
 import { updatePeer } from '../context/actions/peerActions';
@@ -21,25 +21,17 @@ interface IPeerMessage {
   data : any
 }
 
-var context : AudioContext;
+
+var context;
 var buf;
-var source : AudioBufferSourceNode;
+var source;
+
 
 const AudioPage:FC<IPageProps> = ({peer}) => {
     const connectedPeers = useSelector((state:RootState) => state.peer.peersConnected);
     const dispatch = useDispatch();
+    // const [source, setSource] = useState<AudioBufferSourceNode | null>(null);
     dispatch(updatePeer(peer.id))
-
-    peer.on("connection", (conn) => {
-  
-      conn.on("data", (data : IPeerMessage) => {
-        console.log("Data : ", data)
-        if(data.type === peerActionType.PLAY) {
-          source.start(0);
-        }
-        else if(data.type === peerActionType.CONNECT) playByteArray(data.data)
-      });
-    })
   
     function playByteArray(byteArray) {
       try {
@@ -51,31 +43,12 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
     
         context.decodeAudioData(arrayBuffer, function(buffer) {
             buf = buffer;
-            play();
         }, function(error) {
           console.log("Error Occured decoding Audio : ", error)
         });
       }
       catch(e) {
         // console.log(e)
-      }
-  
-    }
-  
-    function play() {
-      try {
-        
-        // if(source) {
-          
-        //   source.stop(0); source = null;
-        // }
-        source = context.createBufferSource();
-        source.buffer = buf;
-        source.connect(context.destination);
-      }
-      catch(e){
-        // error handling
-        console.log("Error getting audio : ", e)
       }
   
     }
@@ -127,6 +100,22 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
       peer.on('open', (id) => {
         console.log('My peer ID is: ' + id);
       });
+
+      peer.on("connection", (conn) => {
+  
+        conn.on("data", (data : IPeerMessage) => {
+          console.log("Data : ", data)
+          if(data.type === peerActionType.PLAY) {
+
+            if(source && source.stop) source.stop() 
+            source = context.createBufferSource();
+            source.buffer = buf;
+            source.connect(context.destination);
+            source.start(0);
+          }
+          else if(data.type === peerActionType.CONNECT) playByteArray(data.data)
+        });
+      })
     }, [peer]);
 
     
