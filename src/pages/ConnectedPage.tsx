@@ -28,9 +28,10 @@ const ConnectedPage = () => {
         {connected.map(id => (
 
                           <ListItem
+                            key={id}
                             secondaryAction={
-                              <IconButton edge="end" aria-label="delete">
-                                <DeleteIcon onClick = {() => dispatch(removePeersConnection(id))} sx = {{fill : 'white'}}/>
+                              <IconButton onClick = {() => dispatch(removePeersConnection(id))} edge="end" aria-label="delete">
+                                <DeleteIcon sx = {{fill : 'white'}}/>
                               </IconButton>
                             }
                           >
