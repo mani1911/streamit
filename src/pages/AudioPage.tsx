@@ -1,5 +1,3 @@
-// // @ts-nocheck
-
 import { FC, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Peer from 'peerjs';
