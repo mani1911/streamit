@@ -1,5 +1,6 @@
 # Streamit
-Stream music across multiple devices creating your own speaker setup.
+Stream music across multiple devices creating your own speaker setup. \
+Check out [Streamit](https://stream.mani1911.work.gd) for the demo version of this project
 
 ## Currently in Experimentation and Testing!
 
