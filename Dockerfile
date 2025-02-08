@@ -8,6 +8,10 @@ RUN yarn install
 
 COPY . .
 
+RUN yarn run build 
+
+RUN npm install -g serve
+
 EXPOSE 3000
 
-CMD ["yarn", "dev", "--host"]
+CMD ["serve", "-s" , "dist"]

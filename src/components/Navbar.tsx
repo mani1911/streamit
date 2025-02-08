@@ -1,7 +1,6 @@
 import { useState, FC } from "react";
 import { Paper, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
-import ArchiveIcon from '@mui/icons-material/Archive';
 import StreamIcon from '@mui/icons-material/Stream';
 import { QrCode } from "@mui/icons-material";
 
@@ -25,7 +24,7 @@ const Navbar:FC = () => {
         <BottomNavigation
         showLabels
         value={value}
-        onChange={(event, newValue) => {
+        onChange={(_, newValue) => {
             // console.log(newValue)
             setValue(newValue);
         }}

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Peer from 'peerjs';
 import { updatePeer } from '../context/actions/peerActions';
