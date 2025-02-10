@@ -1,0 +1,40 @@
+name: Deploy to GCP Compute Engine
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up GCP authentication
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up SSH
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+
+      - name: Deploy to Compute Engine
+        run: |
+          # Copy files to the instance
+          scp -o StrictHostKeyChecking=no -i private_key -r . ${{ secrets.SSH_USER }}@${{ secrets.GCE_INSTANCE_NAME }}:~/app
+
+          # SSH into instance and restart the service
+          ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.SSH_USER }}@${{ secrets.GCE_INSTANCE_NAME }} << 'EOF'
+            cd /var/www/streamit
+            docker compose down
+            git pull --rebase origin main
+            docker compose up -d --build
+          EOF
+
+      - name: Cleanup
+        run: rm -f private_key
