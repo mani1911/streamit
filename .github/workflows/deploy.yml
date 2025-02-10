@@ -26,7 +26,7 @@ jobs:
       - name: Deploy to Compute Engine
         run: |
           # Copy files to the instance
-          scp -o StrictHostKeyChecking=no -i private_key -r . ${{ secrets.SSH_USER }}@${{ secrets.GCE_INSTANCE_NAME }}:~/app
+          scp -o StrictHostKeyChecking=no -i private_key -r . ${{ secrets.SSH_USER }}@${{ secrets.GCE_INSTANCE_NAME }}:/var/www/streamit/
 
           # SSH into instance and restart the service
           ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.SSH_USER }}@${{ secrets.GCE_INSTANCE_NAME }} << 'EOF'
