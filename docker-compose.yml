@@ -1,0 +1,25 @@
+networks:
+  streamit_network:  # Define a custom network
+    driver: bridge
+
+services:
+  streamit:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - peerjs
+    restart: unless-stopped
+    networks:
+      - streamit_network
+
+  peerjs:
+    image: peerjs/peerjs-server
+    ports:
+      - "9000:9000"
+    environment:
+      - PORT=9000
+      # - HOST=0.0.0.0
+    restart: unless-stopped
+    networks:
+      - streamit_network
