@@ -32,7 +32,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.SSH_USER }}@${{ secrets.GCE_INSTANCE_NAME }} << 'EOF'
             cd /var/www/streamit
             docker compose down
-            sudo git pull --rebase origin main
+            sudo git checkout -b staging
+            sudo git pull --rebase origin staging
             docker compose up -d --build
           EOF
 
