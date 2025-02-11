@@ -2,7 +2,7 @@ import { useState, FC } from "react";
 import { Paper, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import StreamIcon from '@mui/icons-material/Stream';
-import { Search, QrCode } from "@mui/icons-material";
+import { QrCode } from "@mui/icons-material";
 
 import { updateApp } from "../context/actions/appActions";
 import { useDispatch } from "react-redux";

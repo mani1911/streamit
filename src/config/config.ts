@@ -5,7 +5,7 @@ interface IConfig {
 }
 
 export const config: IConfig = {
-    signalling_server_host : 'localhost',
-    signalling_server_port : 9000,
-    backend_url : 'http://127.0.0.1:5000'
+    backend_url : 'app.mani1911.work.gd',
+    signalling_server_host : 'peer.mani1911.work.gd',
+    signalling_server_port : 9000 
 }
