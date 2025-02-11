@@ -1,9 +1,9 @@
 import { FC, useEffect } from 'react';
-import Button from '@mui/material/Button';
 import Peer from 'peerjs';
 import { updatePeer } from '../context/actions/peerActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../context/store';
+import { SearchPage } from '../components';
 
 enum peerActionType {
   PLAY = "play",
@@ -52,8 +52,8 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
     }
   
     async function getAudioStream(audioFilePath) {
-      const response = await fetch(audioFilePath, {'mode': 'cors'}); // Fetch the audio file
-      const buffer = await response.arrayBuffer(); // Convert to ArrayBuffer
+      const response = await fetch(audioFilePath, {'mode': 'cors'}); 
+      const buffer = await response.arrayBuffer(); 
       const view = new Uint8Array(buffer);
   
       return view;
@@ -82,13 +82,17 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
     }
   
     function peersPlay() {
+
+
+      var delay = 0;
       connectedPeers.forEach(pid => {
         var conn = peer.connect(pid);
         // const aud = new Audio("audio.mp3");
         conn.on('open', () => {
-          conn.send({type : peerActionType.PLAY, data : 0});
+          conn.send({type : peerActionType.PLAY, data : delay});
           // aud.play()
         })
+        delay += 5;
       })
 
     }
@@ -119,8 +123,9 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
     
     return (
       <>
-        <Button onClick = {() => sendStream("audio.mp3")}>Connect</Button>
-        <Button onClick={() => peersPlay()} variant="contained">Play</Button>
+        <SearchPage sendStream = {sendStream} play = {peersPlay}/>
+        {/* <Button onClick = {() => ("audio.mp3")}>Connect</Button>
+        <Button onClick={() => peersPlay()} variant="contained">Play</Button> */}
       </>
     )
 }
