@@ -39,7 +39,7 @@ const routes: Routes[] = [
 		path: "/connected",
 		description: "Connected Page",
 		element: <ConnectedPage />,
-	},
+	}
 ];
 
 export default routes;
