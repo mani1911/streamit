@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { QRCode } from "../components";
-import { Modal, Box, Typography, Button, Container } from "@mui/material";
+import { Modal, Box, Typography, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
