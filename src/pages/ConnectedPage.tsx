@@ -1,7 +1,7 @@
 import { RootState } from "../context/store";
 import { useDispatch, useSelector } from "react-redux";
 // import { styled } from '@mui/material/styles';
-import { IconButton, List, ListItem, ListItemText } from "@mui/material";
+import { IconButton, List, ListItem, ListItemText, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { removePeersConnection } from "../context/actions/peerActions";
 
@@ -10,8 +10,14 @@ const ConnectedPage = () => {
   const dispatch = useDispatch();
   const connected = useSelector((state: RootState) => state.peer.peersConnected);
   return (
-    <>
-        <p>Connected Peers</p>
+<div style = {{display: 'flex', flexDirection: 'column', height: '90vh', justifyContent: 'center',alignItems: 'center'}}>
+        <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ mt: 1, textAlign: "center" }}
+      >
+        Connected Peers
+      </Typography>
         <List 
         sx={{
                 // width: '80vw',
@@ -43,7 +49,7 @@ const ConnectedPage = () => {
             // </p>
         ))}
         </List>
-    </>
+    </div>
   )
 }
 

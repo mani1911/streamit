@@ -7,7 +7,6 @@ import {
   Button,
   CircularProgress,
   Container,
-  Grid,
   useTheme,
   useMediaQuery,
   Box
@@ -45,7 +44,7 @@ const SongsList: React.FC<SongsListProps>= ({sendStream, play}) => {
     // console.log(`${config.backend_url}/songs?limit=5&index=${page.toString()}`)
     setLoading(true);
     try {
-      const response = await fetch(`${config.backend_url}/songs?limit=5&index=${page.toString()}`);
+      const response = await fetch(`${config.backend_url}/songs?limit=5&index=${(page*5).toString()}`);
       const data = await response.json();
       if (data.songs) {
         setSongs(data.songs);
@@ -57,33 +56,33 @@ const SongsList: React.FC<SongsListProps>= ({sendStream, play}) => {
   };
 
   return (
-    <Container sx={{ height: "90vh", padding: isMobile ? 1 : 3 }}>
-      {/* <Typography
+    <Container sx={{ display: 'flex', flexDirection: "column", height: "auto", maxHeight: '90vh', width: '100vw', padding: isMobile ? 1 : 3 }}>
+      <Typography
         variant={isMobile ? "h6" : "h5"}
         gutterBottom
         sx={{ mt: 1, textAlign: "center" }}
       >
-        🎵 Popular Songs
-      </Typography> */}
+        Stream your fav songs!
+      </Typography>
 
       {loading && (
         <CircularProgress sx={{ display: "block", margin: "20px auto" }} />
       )}
 
-      <Grid
-        container
-        spacing={2}
+      <Container
         sx={{
-          height: "70vh",
+          height: "auto",
           overflowY: "auto",
           width: "100%",
-          padding: 2,
           scrollbarWidth: "none",
+          display: 'flex',
+          flexDirection: 'column',
+          rowGap: 2,
           "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
         }}
       >
         {songs.map((song, index) => (
-          <Grid item xs={12} key={index}>
+          <Container key={index}>
             <Card
               sx={{
                 display: "flex",
@@ -91,7 +90,7 @@ const SongsList: React.FC<SongsListProps>= ({sendStream, play}) => {
                 alignItems: isMobile ? "center" : "flex-start",
                 padding: 1,
                 borderRadius: 2,
-                backgroundColor: "#1e1e1e",
+                backgroundColor: "rgba(30, 30, 30, 0.4)",
                 color: "white",
                 boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)",
               }}
@@ -169,13 +168,14 @@ const SongsList: React.FC<SongsListProps>= ({sendStream, play}) => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Container>
         ))}
-      </Grid>
+      </Container>
 
     <Box
       sx={{
         display: "flex",
+        height: 'auto',
         justifyContent: "space-between", // Space between buttons
         alignItems: "center",
         mt: 3,

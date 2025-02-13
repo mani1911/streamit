@@ -28,7 +28,6 @@ var source;
 const AudioPage:FC<IPageProps> = ({peer}) => {
     const connectedPeers = useSelector((state:RootState) => state.peer.peersConnected);
     const dispatch = useDispatch();
-    // const [source, setSource] = useState<AudioBufferSourceNode | null>(null);
     dispatch(updatePeer(peer.id))
   
     function playByteArray(byteArray) {
@@ -124,8 +123,6 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
     return (
       <>
         <SearchPage sendStream = {sendStream} play = {peersPlay}/>
-        {/* <Button onClick = {() => ("audio.mp3")}>Connect</Button>
-        <Button onClick={() => peersPlay()} variant="contained">Play</Button> */}
       </>
     )
 }
