@@ -83,7 +83,7 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
     function peersPlay() {
 
 
-      var delay = 0;
+      var delay = connectedPeers.length * 5;
       connectedPeers.forEach(pid => {
         var conn = peer.connect(pid);
         // const aud = new Audio("audio.mp3");
@@ -91,7 +91,7 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
           conn.send({type : peerActionType.PLAY, data : delay});
           // aud.play()
         })
-        delay += 5;
+        delay -= 5;
       })
 
     }
@@ -112,7 +112,7 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
             source = context.createBufferSource();
             source.buffer = buf;
             source.connect(context.destination);
-            source.start(0);
+            source.start(data.data);
           }
           else if(data.type === peerActionType.CONNECT) playByteArray(data.data)
         });
