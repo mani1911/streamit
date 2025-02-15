@@ -137,8 +137,8 @@ const SongsList: React.FC<SongsListProps>= ({sendStream, play}) => {
                     display: "flex",
                     alignItems: "center",
                     mt: 3,
-                    gap: 2, // Space between buttons
-                    flexWrap: "wrap", // Ensures proper responsiveness
+                    gap: 2, 
+                    flexWrap: "wrap", 
                   }}
                 >
                   <Button

@@ -15,6 +15,7 @@ const pid = uuidv4().replace(/-/g, "");
 const peer = new Peer(pid,
 	{
 	host: config.signalling_server_host,
+	port: config.signalling_server_port,
 	path: "/",
 });
 

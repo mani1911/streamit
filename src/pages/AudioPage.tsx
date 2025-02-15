@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import Peer from 'peerjs';
-import { updatePeer } from '../context/actions/peerActions';
+import { addSongtoQueue, updatePeer } from '../context/actions/peerActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../context/store';
 import { SearchPage } from '../components';
@@ -28,10 +28,11 @@ var source;
 const AudioPage:FC<IPageProps> = ({peer}) => {
     const connectedPeers = useSelector((state:RootState) => state.peer.peersConnected);
     const dispatch = useDispatch();
-    dispatch(updatePeer(peer.id))
-  
+
     function playByteArray(byteArray) {
       try {
+
+        console.log("bbyte : ", byteArray)
         let arrayBuffer = new ArrayBuffer(byteArray.length);
         let bufferView = new Uint8Array(arrayBuffer);
         for (var i = 0; i < byteArray.length; i++) {
@@ -61,23 +62,18 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
   
     function sendStream(audioFilePath) { 
       try {
-        connectedPeers.forEach(pid => {
-          getAudioStream(audioFilePath).then((buf) => {
+        getAudioStream(audioFilePath).then((buf) => {
+          // dispatch(addSongtoQueue(buf));
+          connectedPeers.forEach(pid => {
             var conn = peer.connect(pid);
-              conn.on('open', () => {
-                conn.send({type: peerActionType.CONNECT, data: buf});
-              })
-          })
-          .catch(e => {
-            console.log("Error Occured sending stream : ", e)
-            return
-          })
-        })
+            conn.on('open', () => {
+              conn.send({ type: peerActionType.CONNECT, data: buf });
+            });
+          });
+        });
+      } catch (e) {
+        console.log("Error Occurred sending stream:", e);
       }
-      catch(e) {
-        console.log("Error Occured sending stream : ", e)
-      }
-
     }
   
     function peersPlay() {
@@ -93,12 +89,14 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
         })
         delay -= 5;
       })
+      
 
     }
 
     useEffect(() => {
       context = new AudioContext();
       peer.on('open', (id) => {
+        dispatch(updatePeer(id))
         console.log('My peer ID is: ' + id);
       });
 
@@ -107,19 +105,21 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
         conn.on("data", (data : IPeerMessage) => {
           console.log("Data : ", data)
           if(data.type === peerActionType.PLAY) {
-
             if(source && source.stop) source.stop() 
             source = context.createBufferSource();
             source.buffer = buf;
             source.connect(context.destination);
             source.start(data.data);
           }
-          else if(data.type === peerActionType.CONNECT) playByteArray(data.data)
+          else if(data.type === peerActionType.CONNECT) {
+            playByteArray(data.data);
+            dispatch(addSongtoQueue(data.data));
+          }
         });
       })
-    }, [peer]);
+    }, []);
 
-    
+
     return (
       <>
         <SearchPage sendStream = {sendStream} play = {peersPlay}/>

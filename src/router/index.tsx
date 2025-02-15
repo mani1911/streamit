@@ -1,11 +1,6 @@
 import {Navbar} from "../components";
-// import { PageNotFound } from "@pages";
-// import { getUser } from "@slices/index";
-// import { useAppDispatch } from "@store/hooks";
-// import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-// import protectedRoutes from "./protectedRoutes";
 import routes from "./routes.tsx";
 
 const Router = () => {

@@ -1,8 +1,9 @@
-import {PeerAction, IPeer, UPDATE_PEER, ADD_PEER, REMOVE_PEER} from "../types";
+import {PeerAction, IPeer, UPDATE_PEER, ADD_PEER, REMOVE_PEER, ADD_TO_QUEUE} from "../types";
 
 const initialState : IPeer = {
     peerID : null,
-    peersConnected : []
+    peersConnected : [],
+    queue: []
 };
 
 const peerReducer = (state = initialState, action: PeerAction): IPeer => {
@@ -35,6 +36,16 @@ const peerReducer = (state = initialState, action: PeerAction): IPeer => {
                 peersConnected : peersConnected
             }  
             // if(peersConnected.includes(action.payload)) peersConnected.
+        
+        case ADD_TO_QUEUE:
+            // console.log("reducer", action.payload)
+            const updatedQueue = [...state.queue, action.payload]
+            // console.log("reducer : ", updatedQueue)
+            return {
+                ...state,
+                queue: updatedQueue
+            }
+
         default:
             return state;
     }
