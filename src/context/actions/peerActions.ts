@@ -21,8 +21,7 @@ export const removePeersConnection = (peerID : string): PeerAction => {
     }
 }
 
-export const addSongtoQueue = (audio : Uint8Array<ArrayBuffer>): PeerAction => {
-    console.log(audio)
+export const addSongtoQueue = (audio : string): PeerAction => {
     return {
         type: ADD_TO_QUEUE,
         payload : audio

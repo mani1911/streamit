@@ -27,29 +27,30 @@ var source;
 
 const AudioPage:FC<IPageProps> = ({peer}) => {
     const connectedPeers = useSelector((state:RootState) => state.peer.peersConnected);
+    const audio = new Audio();
     const dispatch = useDispatch();
 
-    function playByteArray(byteArray) {
-      try {
+    // function playByteArray(byteArray) {
+    //   try {
 
-        console.log("bbyte : ", byteArray)
-        let arrayBuffer = new ArrayBuffer(byteArray.length);
-        let bufferView = new Uint8Array(arrayBuffer);
-        for (var i = 0; i < byteArray.length; i++) {
-          bufferView[i] = byteArray[i];
-        }
+    //     console.log("bbyte : ", byteArray)
+    //     let arrayBuffer = new ArrayBuffer(byteArray.length);
+    //     let bufferView = new Uint8Array(arrayBuffer);
+    //     for (var i = 0; i < byteArray.length; i++) {
+    //       bufferView[i] = byteArray[i];
+    //     }
     
-        context.decodeAudioData(arrayBuffer, function(buffer) {
-            buf = buffer;
-        }, function(error) {
-          console.log("Error Occured decoding Audio : ", error)
-        });
-      }
-      catch(e) {
-        // console.log(e)
-      }
+    //     context.decodeAudioData(arrayBuffer, function(buffer) {
+    //         buf = buffer;
+    //     }, function(error) {
+    //       console.log("Error Occured decoding Audio : ", error)
+    //     });
+    //   }
+    //   catch(e) {
+    //     // console.log(e)
+    //   }
   
-    }
+    // }
   
     async function getAudioStream(audioFilePath) {
       const response = await fetch(audioFilePath, {'mode': 'cors'}); 
@@ -61,14 +62,14 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
   
   
     function sendStream(audioFilePath) { 
+
+      // const aud = new Audio(audioFilePath);
+      // aud.play();
       try {
-        getAudioStream(audioFilePath).then((buf) => {
-          // dispatch(addSongtoQueue(buf));
-          connectedPeers.forEach(pid => {
-            var conn = peer.connect(pid);
-            conn.on('open', () => {
-              conn.send({ type: peerActionType.CONNECT, data: buf });
-            });
+        connectedPeers.forEach(pid => {
+          var conn = peer.connect(pid);
+          conn.on('open', () => {
+            conn.send({ type: peerActionType.CONNECT, data: audioFilePath });
           });
         });
       } catch (e) {
@@ -105,14 +106,21 @@ const AudioPage:FC<IPageProps> = ({peer}) => {
         conn.on("data", (data : IPeerMessage) => {
           console.log("Data : ", data)
           if(data.type === peerActionType.PLAY) {
-            if(source && source.stop) source.stop() 
-            source = context.createBufferSource();
-            source.buffer = buf;
-            source.connect(context.destination);
-            source.start(data.data);
+            
+
+            audio.play();
+            // const songQueue = useSelector((state: RootState) => state.peer.queue);
+            // console.log(songQueue);
+            // if(source && source.stop) source.stop() 
+            // source = context.createBufferSource();
+            // source.buffer = buf;
+            // source.connect(context.destination);
+            // source.start(data.data);
+
+            
           }
           else if(data.type === peerActionType.CONNECT) {
-            playByteArray(data.data);
+            audio.src = data.data;
             dispatch(addSongtoQueue(data.data));
           }
         });

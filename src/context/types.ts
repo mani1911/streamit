@@ -7,14 +7,14 @@ export type PeerAction =
   | { type: "UPDATE_PEER"; payload: string | null }
   | { type: "ADD_PEER"; payload: string }
   | { type: "REMOVE_PEER"; payload: string }
-  | { type: "ADD_TO_QUEUE"; payload: Uint8Array<ArrayBuffer> };
+  | { type: "ADD_TO_QUEUE"; payload: string };
 
 export const UPDATE_APP = "UPDATE_APP";
 
 export interface IPeer {
     peerID : string | null,
     peersConnected : string[],
-    queue: Uint8Array<ArrayBuffer> []
+    queue: string []
 }
 
 export interface IApp {
